@@ -1,0 +1,53 @@
+version: '3.3'
+
+services:
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGODB_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGODB_ROOT_PASSWORD
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_configdb:/data/configdb
+    expose:
+      - 27017
+    networks:
+      - chatbot-net
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_OPTIONS: '{"useUnifiedTopology": true}'
+      ME_CONFIG_BASICAUTH_USERNAME: $MONGODBEXPRESS_BASIC_USERNAME
+      ME_CONFIG_BASICAUTH_PASSWORD: $MONGODBEXPRESS_BASIC_PASSWORD
+      ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGODB_ROOT_USERNAME
+      ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGODB_ROOT_PASSWORD
+    ports:
+      - 27018:8081
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - chatbot-net
+
+volumes:
+  mongodb_data:
+  mongodb_configdb:
+
+networks:
+  chatbot-net:
+    name: chatbot-net
+    driver: bridge

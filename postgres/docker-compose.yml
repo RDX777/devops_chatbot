@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+
+  postgres:
+    image: 'postgres:15-alpine'
+    env_file:
+      - ./.env
+    working_dir: /application
+    restart: always
+    environment:
+        POSTGRES_USER: $POSTGRES_ROOT_USERNAME
+        POSTGRES_PASSWORD: $POSTGRES_ROOT_PASSWORD
+    ports:
+        - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/
+    networks:
+      - chatbot-net
+
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DRIVER: pgsql
+      ADMINER_USERNAME: postgres
+    ports:
+      - 5433:8080
+    networks:
+      - chatbot-net
+
+volumes:
+  postgres_data:
+
+networks:
+  chatbot-net:
+    name: chatbot-net
+    driver: bridge
