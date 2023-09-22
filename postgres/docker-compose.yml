@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   postgres:
-    image: 'postgres:15-alpine'
+    image: 'postgres:alpine'
     env_file:
       - ./.env
     working_dir: /application
@@ -15,18 +15,6 @@ services:
         - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/
-    networks:
-      - chatbot-net
-
-  adminer:
-    image: adminer
-    restart: always
-    environment:
-      ADMINER_DEFAULT_SERVER: postgres
-      ADMINER_DRIVER: pgsql
-      ADMINER_USERNAME: postgres
-    ports:
-      - 5433:8080
     networks:
       - chatbot-net
 

@@ -17,7 +17,7 @@ else {
 
 #Here you define which ports you want to be forwarded.
 #3000 && 3001: React.js and Node.js; 8081: Metro Bundler
-$ports=@(9091,9090);
+$ports=@(80,443,7083);
 
 $ports_a = $ports -join ",";
 

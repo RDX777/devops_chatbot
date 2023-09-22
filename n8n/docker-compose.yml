@@ -1,0 +1,40 @@
+version: '3.8'
+
+x-shared: &shared
+  restart: always
+  image: docker.n8n.io/n8nio/n8n
+  env_file: .env
+  environment:
+    - DB_TYPE=${DB_TYPE}
+    - DB_POSTGRESDB_HOST=${DB_POSTGRESDB_HOST}
+    - DB_POSTGRESDB_PORT=${DB_POSTGRESDB_PORT}
+    - DB_POSTGRESDB_DATABASE=${DB_POSTGRESDB_DATABASE}
+    - DB_POSTGRESDB_USER=${POSTGRES_NON_ROOT_USER}
+    - DB_POSTGRESDB_PASSWORD=${POSTGRES_NON_ROOT_PASSWORD}
+    - EXECUTIONS_MODE=queue
+    - QUEUE_BULL_REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
+    - QUEUE_BULL_REDIS_PASSWORD=${QUEUE_BULL_REDIS_PASSWORD}
+  volumes:
+    - n8n_storage:/home/node/.n8n
+  networks:
+    - chatbot-net
+
+services:
+  n8n:
+    <<: *shared
+    ports:
+      - '5678:5678'
+
+  n8n-worker:
+    <<: *shared
+    command: worker
+    depends_on:
+      - n8n
+
+volumes:
+  n8n_storage:
+
+networks:
+  chatbot-net:
+    name: chatbot-net
+    driver: bridge

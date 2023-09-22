@@ -1,0 +1,27 @@
+version: '3.3'
+
+services:
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      # ME_CONFIG_SITE_BASEURL: /mongo-express
+      ME_CONFIG_MONGODB_OPTIONS: '{"useUnifiedTopology": true}'
+      ME_CONFIG_BASICAUTH_USERNAME: $MONGODBEXPRESS_BASIC_USERNAME
+      ME_CONFIG_BASICAUTH_PASSWORD: $MONGODBEXPRESS_BASIC_PASSWORD
+      ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGODB_ROOT_USERNAME
+      ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGODB_ROOT_PASSWORD
+    ports:
+      - 80:8081
+    networks:
+      - chatbot-net
+
+networks:
+  chatbot-net:
+    name: chatbot-net
+    driver: bridge

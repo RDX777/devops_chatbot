@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+
+  redis-php-admin:
+    container_name: redis_php_admin
+    image: erikdubbelboer/phpredisadmin
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      REDIS_1_HOST: redis
+      REDIS_1_NAME: redis
+      REDIS_1_PORT: 6379
+      REDIS_1_AUTH: $REDIS_PASSWORD
+      ADMIN_USER: root
+      ADMIN_PASS: $REDIS_PASSWORD
+    ports:
+      - '80:80'
+    networks:
+      - chatbot-net
+
+networks:
+  chatbot-net:
+    name: chatbot-net
+    driver: bridge
